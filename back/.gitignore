@@ -1,0 +1,2 @@
+.dockerignore
+iris_app/__pycache__
