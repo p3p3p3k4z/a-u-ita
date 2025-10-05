@@ -8,7 +8,19 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import MultiLabelBinarizer
 import io
 
+
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="Predicción de Polinizadores en México")
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # "*" permite todas las conexiones (útil para desarrollo)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Cargar datos 
 df = pd.read_csv("/data/polinizadores_mexico.csv")

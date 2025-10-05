@@ -1,12 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Datos Históricos</title>
-    <style> body { font-family: 'Roboto', sans-serif; padding: 2rem 3rem; color: #333; } h1 { font-weight: 300; font-size: 2.5rem; } p { font-size: 1.1rem; } </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predicción de Flora Endémica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f9ff;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #2b6777;
+    }
+
+    .input-container {
+      margin: 15px auto;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #2b6777;
+      color: white;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e4f5c;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    #grafica {
+      margin-top: 20px;
+      max-width: 80%;
+      border-radius: 10px;
+      display: none;
+
+    }
+    
+    #graf {
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    }
+
+    #MFlora, #MPolinizadores {
+        display: none; 
+    }
+
+  </style>
 </head>
 <body>
-    <h1>Datos Históricos</h1>
-    <p>Accede a series de tiempo, gráficas y análisis sobre poblaciones de polinizadores, producción agrícola y factores climáticos.</p>
+
+    <div>
+        <button onclick="mostrarFlora()">Flora</button>
+        <button onclick="mostrarPolinizadores()">Polinizadores</button>
+    </div>
+
+    <div id="MPolinizadores">
+        <h1>Polinizadores con tus condiciones climaticas</h1>
+    
+        <div class="input-container">
+            <label>Temperatura promedio (°C):</label><br>
+            <input type="number" id="temperaturaPol" step="0.1"><br>
+    
+            <label>Altitud promedio (m):</label><br>
+            <input type="number" id="altitudPol" step="1"><br>
+    
+            <button onclick="solicitarPrediccionPolinizadores()">Predecir Polinizadores</button>
+        </div>
+    
+        <div id="grafPol">
+            <img id="graficaPol" alt="Gráfica de predicción">
+        </div>
+    </div>
+    
+    <div id="MFlora">
+        <h1>Flora con tus condiciones climaticas</h1>
+    
+        <div class="input-container">
+            <label>Temperatura promedio (°C):</label><br>
+            <input type="number" id="temperaturaFlora" step="0.1"><br>
+    
+            <label>Humedad (%):</label><br>
+            <input type="number" id="humedadFlora" step="0.1"><br>
+    
+            <label>Altitud promedio (m):</label><br>
+            <input type="number" id="altitudFlora" step="1"><br>
+    
+            <button onclick="solicitarPrediccionFlora()">Predecir Flora</button>
+        </div>
+    
+        <div id="grafFlora">
+            <img id="graficaFlora" alt="Gráfica de predicción">
+        </div>
+    </div>
+    
+
+
+<script>
+    async function solicitarPrediccionPolinizadores() {
+        const temp = document.getElementById("temperatura").value;
+        const alt = document.getElementById("altitud").value;
+
+        if (!temp || !alt) {
+        alert("Por favor, ingresa temperatura y altitud.");
+        return;
+        }
+
+        try {
+        const respPred = await fetch(`http://localhost:8040/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=false`);
+        const dataPred = await respPred.json();
+
+        const respPlot = await fetch(`http://localhost:8040/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=true`);
+        const blob = await respPlot.blob();
+        const url = URL.createObjectURL(blob);
+        const grafica = document.getElementById("grafica");
+        grafica.src = url;
+        grafica.style.display = "block";
+
+        } catch (error) {
+        console.error("Error al solicitar predicción:", error);
+        document.getElementById("resultado").innerText = "Error al conectarse al servidor.";
+        
+        }
+    }
+
+    async function solicitarPrediccionFlora() {
+        const temp = document.getElementById("temperatura").value;
+        const hum = document.getElementById("humedad").value;
+        const alt = document.getElementById("altitud").value;
+
+        if (!temp || !alt) {
+        alert("Por favor, ingresa temperatura, humedad y altitud.");
+        return;
+        }
+
+        try {
+        const respPred = await fetch(`http://localhost:8040/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=false`);
+        const dataPred = await respPred.json();
+
+        const respPlot = await fetch(`http://localhost:8040/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=true`);
+        const blob = await respPlot.blob();
+        const url = URL.createObjectURL(blob);
+        const grafica = document.getElementById("grafica");
+        grafica.src = url;
+        grafica.style.display = "block";
+
+        } catch (error) {
+        console.error("Error al solicitar predicción:", error);
+        document.getElementById("resultado").innerText = "Error al conectarse al servidor.";
+        
+        }
+    }
+
+    function mostrarFlora() {
+        document.getElementById("MFlora").style.display = "block";        
+        document.getElementById("MPolinizadores").style.display = "none"; 
+    }
+
+    function mostrarPolinizadores() {
+        document.getElementById("MPolinizadores").style.display = "block"; 
+        document.getElementById("MFlora").style.display = "none";          
+    }
+
+    window.onload = () => {
+        mostrarPolinizadores();
+    }
+
+</script>
+
 </body>
 </html>
