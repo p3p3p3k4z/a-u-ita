@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const vegetationRoutes = require('./routes/vegetation');
+const gemeniRoutes = require('./routes/gemeni');
 require('dotenv').config();
 
 const app = express();
@@ -12,7 +13,9 @@ app.use(express.json());
 
 // Rutas
 app.use('/api', vegetationRoutes);
-
+//recibira un promp para enviar a gemeni
+app.use('/api/gemeni', gemeniRoutes);
+//localhost:3000/api/gemeni/ask
 // Ruta de salud
 app.get('/health', (req, res) => {
     res.json({ 
@@ -36,8 +39,8 @@ app.get('/test', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-    console.log(`🌍 Health check: http://localhost:${PORT}/health`);
-    console.log(`🔍 Test: http://localhost:${PORT}/test`);
-    console.log(`🌿 Ejemplo API: http://localhost:${PORT}/api/vegetation/Jalisco`);
+    console.log(` Servidor corriendo en puerto ${PORT}`);
+    console.log(` Health check: http://localhost:${PORT}/health`);
+    console.log(` Test: http://localhost:${PORT}/test`);
+    console.log(` Ejemplo API: http://localhost:${PORT}/api/vegetation/Jalisco`);
 });

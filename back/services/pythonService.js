@@ -8,7 +8,7 @@ class PythonService {
 
     executePython(scriptData) {
         return new Promise((resolve, reject) => {
-            console.log('🐍 Ejecutando script Python para:', scriptData.state);
+            console.log(' Ejecutando script Python para:', scriptData.state);
             
             const pythonProcess = spawn('python', [this.pythonScript], {
                 stdio: ['pipe', 'pipe', 'pipe']

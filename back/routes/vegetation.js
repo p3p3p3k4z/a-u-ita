@@ -6,13 +6,15 @@ const router = express.Router();
 router.get('/vegetation/:state', async (req, res) => {
     try {
         const today = new Date().toISOString().slice(0, 10);
-        const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        const twoDaysBefore = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
         const { state } = req.params;
-        const { startDate = yesterday, endDate = today } = req.query;
+        const { startDate = twoDaysBefore, endDate = today } = req.query;
+        // Ejemplos de fechas : 2023-11-01 2023-11-03
 
-        console.log(`🌿 Solicitando datos para: ${state} (${startDate} a ${endDate})`);
+
+        console.log(` Solicitando datos para: ${state} (${startDate} a ${endDate})`);
         
-        const result = await pythonService.getVegetationData(state, startDate, endDate);
+        const result = await pythonService.getVegetationData(state, twoDaysBefore, today);
         
         if (result.error) {
             return res.status(500).json({ 
@@ -30,7 +32,7 @@ router.get('/vegetation/:state', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en ruta vegetation:', error);
+        console.error(' Error en ruta vegetation:', error);
         res.status(500).json({ 
             error: 'Error interno del servidor',
             details: error.message,

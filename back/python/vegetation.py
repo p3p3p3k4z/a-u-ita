@@ -57,13 +57,19 @@ def get_vegetation_data(state_name, start_date, end_date):
         
         # Calcular índices
         def calculate_indices(img):
+            
+            B8 = img.select('B8').divide(10000)
+            B4 = img.select('B4').divide(10000)
+            B2 = img.select('B2').divide(10000)
+            B12 = img.select('B12').divide(10000)
+    
             ndvi = img.normalizedDifference(['B8', 'B4']).rename('NDVI')
             evi = img.expression(
-                '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
-                    'NIR': img.select('B8'),
-                    'RED': img.select('B4'),
-                    'BLUE': img.select('B2')
-                }).rename('EVI')
+                    '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
+                        'NIR': B8,   # Usar banda escalada
+                        'RED': B4,   # Usar banda escalada
+                        'BLUE': B2   # Usar banda escalada
+                    }).rename('EVI')
             nbr = img.normalizedDifference(['B8', 'B12']).rename('NBR')
             return img.addBands([ndvi, evi, nbr]).set('date', img.date().format('YYYY-MM-dd'))
         
