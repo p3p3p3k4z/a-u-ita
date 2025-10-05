@@ -59,8 +59,8 @@ paths.forEach(path => {
 
 async function getDatosVegetation(state) {
   try {
-    const response = await fetch(`http://localhost:3000/api/vegetation/${state}`);
-    console.log(`Fetch URL: http://localhost:3000/api/vegetation/${state}`);
+    const response = await fetch(`http://localhost:5000/api/vegetation/${state}`);
+    console.log(`Fetch URL: http://localhost:5000/api/vegetation/${state}`);
     if (!response.ok) throw new Error('Error en la respuesta');
     const data = await response.json();
     console.log('Datos de vegetación:', data['data']);
@@ -71,11 +71,16 @@ async function getDatosVegetation(state) {
   }
 }
 
+//probar funcion getdatosvegetation
+getDatosVegetation('Jalisco').then(data => {
+  console.log('Prueba getDatosVegetation:', data);
+});
+
 async function analizarParametros(ndvi, nbr, evi,state) {
 
   try {
     promt = `NDVI: ${ndvi}, NBR: ${nbr}, EVI: ${evi}, Estado: ${state}`;
-    const response = await fetch(`http://localhost:3000/api/gemeni/ask`, {
+    const response = await fetch(`http://localhost:5000/api/gemeni/ask`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: promt }),
@@ -91,6 +96,10 @@ async function analizarParametros(ndvi, nbr, evi,state) {
   
 }
 
+console.log('Prueba analizarParametros:');
+analizarParametros(0.7, 0.3, 0.6, 'Jalisco').then(result => {
+  console.log('Resultado de analizarParametros:', result);
+});
 
 /**
  * Analiza los valores NDVI, NBR y EVI y devuelve un mensaje descriptivo
@@ -126,6 +135,6 @@ function interpretarVegetacion(ndvi, nbr, evi) {
   }
   // Caso general
   else {
-    //return { texto: '🔍 Estado intermedio o no definido claramente.', clase: 'alert-light' };
+    return { texto: '', clase: 'alert-light'};
   }
 }
