@@ -59,6 +59,7 @@
       max-width: 80%;
       border-radius: 10px;
       display: none;
+
     }
     
     #grafPol, #grafFlora {
@@ -81,7 +82,7 @@
     </div>
 
     <div id="MPolinizadores">
-        <h1>Polinizadores con tus condiciones climáticas</h1>
+        <h1>Polinizadores con tus condiciones climaticas</h1>
     
         <div class="input-container">
             <label>Temperatura promedio (°C):</label><br>
@@ -99,7 +100,7 @@
     </div>
     
     <div id="MFlora">
-        <h1>Flora con tus condiciones climáticas</h1>
+        <h1>Flora con tus condiciones climaticas</h1>
     
         <div class="input-container">
             <label>Temperatura promedio (°C):</label><br>
@@ -119,82 +120,78 @@
         </div>
     </div>
     
+
+
 <script>
-const SERVER_IP = "192.100.170.152"; // IP del servidor donde corre FastAPI
-const SERVER_PORT = "8040";
+    async function solicitarPrediccionPolinizadores() {
+        const temp = document.getElementById("temperaturaPol").value;
+        const alt = document.getElementById("altitudPol").value;
 
-async function solicitarPrediccionPolinizadores() {
-    const temp = document.getElementById("temperaturaPol").value;
-    const alt = document.getElementById("altitudPol").value;
-
-    if (!temp || !alt) {
+        if (!temp || !alt) {
         alert("Por favor, ingresa temperatura y altitud.");
         return;
-    }
+        }
 
-    try {
-        // Predicción sin gráfica
-        const respPred = await fetch(`http://${SERVER_IP}:${SERVER_PORT}/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=false`);
+        try {
+        const respPred = await fetch(`http://localhost:8040/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=false`);
         const dataPred = await respPred.json();
-        console.log("Polinizadores predichos:", dataPred);
 
-        // Predicción con gráfica
-        const respPlot = await fetch(`http://${SERVER_IP}:${SERVER_PORT}/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=true`);
+        const respPlot = await fetch(`http://localhost:8040/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=true`);
         const blob = await respPlot.blob();
         const url = URL.createObjectURL(blob);
         const grafica = document.getElementById("graficaPol");
         grafica.src = url;
         grafica.style.display = "block";
 
-    } catch (error) {
+        } catch (error) {
         console.error("Error al solicitar predicción:", error);
         document.getElementById("resultado").innerText = "Error al conectarse al servidor.";
+        
+        }
     }
-}
 
-async function solicitarPrediccionFlora() {
-    const temp = document.getElementById("temperaturaFlora").value;
-    const hum = document.getElementById("humedadFlora").value;
-    const alt = document.getElementById("altitudFlora").value;
+    async function solicitarPrediccionFlora() {
+        const temp = document.getElementById("temperaturaFlora").value;
+        const hum = document.getElementById("humedadFlora").value;
+        const alt = document.getElementById("altitudFlora").value;
 
-    if (!temp || !hum || !alt) {
+        if (!temp || !alt) {
         alert("Por favor, ingresa temperatura, humedad y altitud.");
         return;
-    }
+        }
 
-    try {
-        // Predicción flora sin gráfica
-        const respPred = await fetch(`http://${SERVER_IP}:${SERVER_PORT}/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=false`);
+        try {
+        const respPred = await fetch(`http://localhost:8040/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=false`);
         const dataPred = await respPred.json();
-        console.log("Flora predicha:", dataPred);
 
-        // Predicción flora con gráfica
-        const respPlot = await fetch(`http://${SERVER_IP}:${SERVER_PORT}/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=true`);
+        const respPlot = await fetch(`http://localhost:8040/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=true`);
         const blob = await respPlot.blob();
         const url = URL.createObjectURL(blob);
         const grafica = document.getElementById("graficaFlora");
         grafica.src = url;
         grafica.style.display = "block";
 
-    } catch (error) {
+        } catch (error) {
         console.error("Error al solicitar predicción:", error);
         document.getElementById("resultado").innerText = "Error al conectarse al servidor.";
+        
+        }
     }
-}
 
-function mostrarFlora() {
-    document.getElementById("MFlora").style.display = "block";        
-    document.getElementById("MPolinizadores").style.display = "none"; 
-}
+    function mostrarFlora() {
+        document.getElementById("MFlora").style.display = "block";        
+        document.getElementById("MPolinizadores").style.display = "none"; 
+    }
 
-function mostrarPolinizadores() {
-    document.getElementById("MPolinizadores").style.display = "block"; 
-    document.getElementById("MFlora").style.display = "none";          
-}
+    function mostrarPolinizadores() {
+        document.getElementById("MPolinizadores").style.display = "block"; 
+        document.getElementById("MFlora").style.display = "none";          
+    }
 
-window.onload = () => {
-    mostrarPolinizadores();
-}
+    window.onload = () => {
+        mostrarPolinizadores();
+    }
+
 </script>
 
 </body>
