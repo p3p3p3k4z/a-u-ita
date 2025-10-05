@@ -9,53 +9,58 @@ document.addEventListener('DOMContentLoaded', function() {
   const vegetationStatus = document.getElementById('vegetationStatus');
   const stateModal = new bootstrap.Modal(document.getElementById('stateModal'));
 
-  paths.forEach(path => {
-    path.addEventListener('click', async function() {
-      // Quitar clase activa
-      paths.forEach(p => p.classList.remove('active'));
-      this.classList.add('active');
+paths.forEach(path => {
+  path.addEventListener('click', async function() {
+    paths.forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
 
-      // Obtener nombre e id
-      const stateName = this.getAttribute('data-estado') || this.querySelector('title')?.textContent || 'Estado desconocido';
-      const stateId = this.getAttribute('data-id');
+    const stateName = this.getAttribute('data-estado') || this.querySelector('title')?.textContent || 'Estado desconocido';
+    const stateId = this.getAttribute('data-id');
 
-      // Mostrar el nombre
-      stateNameElement.textContent = stateName;
+    stateNameElement.textContent = stateName;
 
-      // Mostrar modal inmediatamente (con “Cargando…”)
-      ndviValue.textContent = nbrValue.textContent = eviValue.textContent = '--';
-      vegetationStatus.textContent = 'Cargando datos...';
-      vegetationStatus.className = 'alert alert-secondary';
-      stateModal.show();
+    ndviValue.textContent = nbrValue.textContent = eviValue.textContent = '--';
+    vegetationStatus.textContent = 'Cargando datos...';
+    vegetationStatus.className = 'alert alert-secondary';
+    const analysisResult = document.getElementById('analysisResult');
+    analysisResult.innerHTML = '<p class="text-muted">Analizando información...</p>';
+    stateModal.show();
 
-      // Esperar respuesta del backend
-      const data = await getDatosVegetation(stateName);
+    const data = await getDatosVegetation(stateName);
 
-      if (data) {
-        // Mostrar valores
-        console.log('Datos recibidos:', data[0]);
-        console.log('Datos recibidos:', data[0].NDVI, data[0].NBR, data[0].EVI);
-        console.log('Datos recibidos:', data[0]['NDVI'], data[0]['NBR'], data[0]['EVI']);
+    if (data) {
+      const answer = await analizarParametros(data[0].NDVI, data[0].NBR, data[0].EVI, stateName);
+      console.log('Respuesta del análisis de parámetros:', answer);
 
-        ndviValue.textContent = data[0].NDVI?.toFixed(2) ?? '--';
-        nbrValue.textContent = data[0].NBR?.toFixed(2) ?? '--';
-        eviValue.textContent = data[0].EVI?.toFixed(2) ?? '--';
+      ndviValue.textContent = data[0].NDVI?.toFixed(2) ?? '--';
+      nbrValue.textContent = data[0].NBR?.toFixed(2) ?? '--';
+      eviValue.textContent = data[0].EVI?.toFixed(2) ?? '--';
 
-        // Determinar situación
-        const mensaje = interpretarVegetacion(data[0].NDVI, data[0].NBR, data[0].EVI);
-        vegetationStatus.textContent = mensaje.texto;
-        vegetationStatus.className = `alert ${mensaje.clase}`;
+      const mensaje = interpretarVegetacion(data[0].NDVI, data[0].NBR, data[0].EVI);
+      vegetationStatus.textContent = mensaje.texto;
+      vegetationStatus.className = `alert ${mensaje.clase}`;
+
+      // 🔹 Mostrar resultado detallado del análisis (HTML del backend)
+      if (answer) {
+        analysisResult.innerHTML = answer;
       } else {
-        vegetationStatus.textContent = 'No se pudieron obtener datos.';
-        vegetationStatus.className = 'alert alert-danger';
+        analysisResult.innerHTML = '<p class="text-muted">No se pudo generar un análisis detallado.</p>';
       }
-    });
+
+    } else {
+      vegetationStatus.textContent = 'No se pudieron obtener datos.';
+      vegetationStatus.className = 'alert alert-danger';
+      analysisResult.innerHTML = '<p class="text-danger">No se pudo obtener información del análisis.</p>';
+    }
   });
+});
+
 });
 
 async function getDatosVegetation(state) {
   try {
     const response = await fetch(`http://localhost:3000/api/vegetation/${state}`);
+    console.log(`Fetch URL: http://localhost:3000/api/vegetation/${state}`);
     if (!response.ok) throw new Error('Error en la respuesta');
     const data = await response.json();
     console.log('Datos de vegetación:', data['data']);
@@ -65,6 +70,27 @@ async function getDatosVegetation(state) {
     return null;
   }
 }
+
+async function analizarParametros(ndvi, nbr, evi,state) {
+
+  try {
+    promt = `NDVI: ${ndvi}, NBR: ${nbr}, EVI: ${evi}, Estado: ${state}`;
+    const response = await fetch(`http://localhost:3000/api/gemeni/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: promt }),
+    });
+    if (!response.ok) throw new Error('Error en la respuesta');
+    const data = await response.json();
+    const newdata = data.answer.slice(7,-3);
+    return newdata;
+  } catch (error) {
+    console.error('Error al analizar parámetros:', error);
+    return null;
+  }
+  
+}
+
 
 /**
  * Analiza los valores NDVI, NBR y EVI y devuelve un mensaje descriptivo
@@ -100,6 +126,6 @@ function interpretarVegetacion(ndvi, nbr, evi) {
   }
   // Caso general
   else {
-    return { texto: '🔍 Estado intermedio o no definido claramente.', clase: 'alert-light' };
+    //return { texto: '🔍 Estado intermedio o no definido claramente.', clase: 'alert-light' };
   }
 }
