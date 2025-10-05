@@ -2,11 +2,41 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Islas Polinizadoras</title>
-    <style> body { font-family: 'Roboto', sans-serif; padding: 2rem 3rem; color: #333; } h1 { font-weight: 300; font-size: 2.5rem; } p { font-size: 1.1rem; } </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMBIOSIS - Visor de Islas Polinizadoras 3D</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 </head>
 <body>
-    <h1>Prototipo de Islas Polinizadoras</h1>
-    <p>Aquí podrás diseñar, simular y gestionar la implementación de "Islas Polinizadoras" en terrenos agrícolas.</p>
+    <header>
+        <h1>Visor de Prototipos 3D de Islas Polinizadoras</h1>
+        <p>Selecciona un estado para explorar su ecosistema en 3D.</p>
+    </header>
+
+    <main>
+        <div class="region-selection">
+            <h2>Elige tu Estado:</h2>
+            <button class="region-btn" data-state="Oaxaca">Oaxaca</button>
+            <button class="region-btn" data-state="Chiapas">Chiapas</button>
+            <button class="region-btn" data-state="Guerrero">Guerrero</button>
+        </div>
+
+        <div class="display-area">
+            <model-viewer id="island-viewer" 
+                src="modelos/isla_oaxaca.glb" 
+                alt="Un modelo 3D de la Isla Polinizadora"
+                auto-rotate 
+                camera-controls
+                shadow-intensity="1"
+                environment-image="neutral"
+                exposure="1.5">
+            </model-viewer>
+            
+            <div id="design-legend">
+                </div>
+        </div>
+    </main>
+    
+    <script src="js/script.js"></script>
 </body>
 </html>

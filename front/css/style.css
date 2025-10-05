@@ -1,0 +1,285 @@
+:root {
+    --primary-color: #4CAF50; /* Verde principal */
+    --secondary-color: #A1887F; /* Marrón campo */
+    --bg-color: #F1F8E9;
+    --text-color: #333;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+}
+
+.region-selection {
+    padding: 1.5rem;
+}
+
+.region-btn {
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.region-btn:hover, .region-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.display-area {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+/* --- La Magia del Layout con CSS Grid --- */
+#layout-container {
+    width: 600px;
+    height: 600px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    position: relative; /* Para centrar el círculo */
+}
+
+.placeholder-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    color: #888;
+}
+
+.crop-plot {
+    background-color: #D2B48C; /* Color de tierra arada */
+    background-image: url('https://www.transparenttextures.com/patterns/furrows.png');
+    border: 2px solid var(--secondary-color);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 2px black;
+}
+
+.pollinator-island {
+    background-color: #DCEDC8; /* Verde claro de la isla */
+    border: 5px solid var(--primary-color);
+    border-radius: 50%; /* Esto lo hace un círculo */
+    width: 250px;
+    height: 250px;
+    
+    /* Centrado perfecto sobre los 4 rectángulos */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que las imágenes se acomoden */
+    gap: 5px;
+}
+
+.prototype-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen llene el círculo sin deformarse */
+    border-radius: 50%;
+}
+
+/* Leyenda */
+#design-legend {
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.legend-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.legend-item h4, .legend-item p {
+    margin: 0;
+}
+.legend-item p {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+
+
+/* --- Estilos para la Leyenda Interactiva (AÑADIR ESTO) --- */
+.legend-item {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    justify-content: space-between; /* Alinea los elementos */
+}
+
+.legend-plant-info {
+    display: flex;
+    align-items: center;
+}
+
+.legend-plant-info img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.legend-plant-info h4, .legend-plant-info p {
+    margin: 0;
+}
+
+.legend-plant-info p {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.change-plant-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+.change-plant-btn:hover {
+    background-color: #bdbdbd;
+}
+
+.plant-selector {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+
+/* Estilo para el contenedor del modelo 3D */
+#island-viewer {
+    width: 600px;
+    height: 500px;
+    border-radius: 15px;
+    border: 3px solid #ddd;
+    background-color: #f0f8ff; /* Un color de fondo suave tipo cielo */
+}
+
+
+
+/* --- ESTILOS PARA LA NUEVA FICHA TÉCNICA / LEYENDA --- */
+
+#design-legend {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-height: 500px; /* Misma altura que el visor 3D */
+    overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+#design-legend h2 {
+    text-align: center;
+    color: #2E7D32; /* Verde oscuro */
+    border-bottom: 2px solid #AED581; /* Verde claro */
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.legend-section {
+    margin-bottom: 25px;
+}
+
+.legend-section h4 {
+    color: #333;
+    background-color: #F1F8E9; /* Fondo verde muy pálido */
+    padding: 8px;
+    border-radius: 4px;
+    border-left: 5px solid #8BC34A; /* Acento verde */
+    margin-bottom: 15px;
+}
+
+.flora-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.flora-table th, .flora-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.flora-table th {
+    background-color: #f2f2f2;
+}
+
+.flora-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.flora-table em {
+    color: #555;
+    font-size: 0.8rem;
+}
+
+.benefits-text {
+    font-size: 0.9rem;
+    color: #333;
+    background-color: #E8F5E9;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px dashed #a5d6a7;
+}
+
+#design-legend ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+#design-legend li {
+    margin-bottom: 8px;
+}
