@@ -62,7 +62,7 @@
 
     }
     
-    #graf {
+    #grafPol, #grafFlora {
         display: flex; 
         justify-content: center; 
         align-items: center;
@@ -95,7 +95,7 @@
         </div>
     
         <div id="grafPol">
-            <img id="graficaPol" alt="Gráfica de predicción">
+            <img id="graficaPol" alt="Gráfica de predicción" style="display:none">
         </div>
     </div>
     
@@ -116,7 +116,7 @@
         </div>
     
         <div id="grafFlora">
-            <img id="graficaFlora" alt="Gráfica de predicción">
+            <img id="graficaFlora" alt="Gráfica de predicción" style="display:none">
         </div>
     </div>
     
@@ -124,8 +124,8 @@
 
 <script>
     async function solicitarPrediccionPolinizadores() {
-        const temp = document.getElementById("temperatura").value;
-        const alt = document.getElementById("altitud").value;
+        const temp = document.getElementById("temperaturaPol").value;
+        const alt = document.getElementById("altitudPol").value;
 
         if (!temp || !alt) {
         alert("Por favor, ingresa temperatura y altitud.");
@@ -139,7 +139,7 @@
         const respPlot = await fetch(`http://localhost:8040/polinizadores/?temperatura=${temp}&altitud=${alt}&grafica=true`);
         const blob = await respPlot.blob();
         const url = URL.createObjectURL(blob);
-        const grafica = document.getElementById("grafica");
+        const grafica = document.getElementById("graficaPol");
         grafica.src = url;
         grafica.style.display = "block";
 
@@ -151,9 +151,9 @@
     }
 
     async function solicitarPrediccionFlora() {
-        const temp = document.getElementById("temperatura").value;
-        const hum = document.getElementById("humedad").value;
-        const alt = document.getElementById("altitud").value;
+        const temp = document.getElementById("temperaturaFlora").value;
+        const hum = document.getElementById("humedadFlora").value;
+        const alt = document.getElementById("altitudFlora").value;
 
         if (!temp || !alt) {
         alert("Por favor, ingresa temperatura, humedad y altitud.");
@@ -167,7 +167,7 @@
         const respPlot = await fetch(`http://localhost:8040/floraEndemica/?temperatura=${temp}&humedad=${hum}&altitud=${alt}&grafica=true`);
         const blob = await respPlot.blob();
         const url = URL.createObjectURL(blob);
-        const grafica = document.getElementById("grafica");
+        const grafica = document.getElementById("graficaFlora");
         grafica.src = url;
         grafica.style.display = "block";
 
